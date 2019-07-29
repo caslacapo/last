@@ -1,0 +1,9 @@
+vi /etc/auto.misc
+
+add at the end
+
+iscsi		-fstype=xfs											:UUID=" "
+nfsshare	-fstype=nfs,rw										vm1:/nfsshare
+smbshare	-fstype=cifs,rw,credentials=/root/smb-cred.txt 		://vm1/smbshare
+
+systemctl restart autofs
