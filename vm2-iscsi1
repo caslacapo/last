@@ -45,6 +45,9 @@ add at the end
 iscsi	-fstype=xfs		UUID=" "
 
 systemctl restart autofs
+df -h
+cd /mnt/iscsi
+df -h
 
 
 
