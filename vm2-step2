@@ -1,3 +1,4 @@
 ausearch -c 'unbound' --raw | audit2allow -M my-unbound
+sleep 5s
 semodule -i my-unbound.pp
 
