@@ -1,0 +1,5 @@
+targetcli saveconfig
+firewall-cmd --add-port=3260/tcp --permanent
+firewall-cmd --reload
+systemctl enable target.service
+systemctl start target.service
