@@ -42,7 +42,7 @@ vi /etc/auto.misc
 
 add at the end
 
-iscsi	-fstype=xfs		:UUID
+iscsi	-fstype=xfs		UUID=" "
 
 systemctl restart autofs
 
