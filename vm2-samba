@@ -1,0 +1,28 @@
+VM2
+
+yum -y install samba-client cifs-utils
+cd root
+mkdir /testdir
+mount -o username=uone //vm1/smbshare /testdir
+touch ~/smb-cred.txt
+chmod 600 ~/smb-cred.txt
+vi ~/smb-cred.txt
+##in the file add
+username=uone
+password=Pa11word
+
+:wq
+
+yum install autofs
+systemctl enable autofs
+systemctl start autofs
+#edit the file /etc/auto.master
+#comment /misc   /etc/auto.misc
+/mnt /etc/auto.misc
+
+vi /etc/auto.misc
+#add 
+smbshare	-fstype=cifs,rw,credentials=/root/smb-cred.txt 	://vm1/smbshare
+:wq
+
+systemctl restart autofs

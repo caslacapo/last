@@ -1,0 +1,19 @@
+yum -y install targetcli
+targetcli 
+cd /backstores/block
+create block1 /dev/vdb
+cd ../../iscsi
+create iqn.2014-06.com.example:remotedisk1
+cd iqn.2014-06.com.example:remotedisk1/tpg1/portals
+delete 0.0.0.0 3260
+create 10.0.0.100 3260
+cd ../luns
+create /backstores/block/block1
+cd ../acls
+create iqn.2014-06.com.example:vm2
+exit
+targetcli saveconfig
+firewall-cmd --add-port=3260/tcp --permanent
+firewall-cmd --reload
+systemctl enable target.service
+systemctl start target.service

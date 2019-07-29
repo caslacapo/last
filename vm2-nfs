@@ -1,0 +1,31 @@
+curl -s https://raw.githubusercontent.com/brianf21/CTS1111C/master/vm2 | sh
+mkdir /testdir
+mount -t nfs vm1:/nfsshare /testdir
+touch /testdir/file1.txt
+umount /testdir
+
+rm -rf/testdir
+
+yum install -y autofs
+
+#edit the file /etc/auto.master
+#comment /misc   /etc/auto.misc
+/mnt /etc/auto.misc
+:wq
+#now edit the /etc/auto.misc, add at the end
+nfsshare	-fstype=nfs,rw		vm1:/nfsshare
+:wq
+
+systemctl start autofs
+systemctl enable autofs
+
+cd /mnt/nfsshare
+touch something.txt
+ls
+
+
+
+
+
+yy (copy)
+p (paste)

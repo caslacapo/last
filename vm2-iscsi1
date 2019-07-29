@@ -1,0 +1,50 @@
+yum install iscsi-initiator-utils -y
+systemctl enable iscsid
+systemctl enable iscsi
+systemctl restart iscsid
+systemctl restart iscsi
+iscsiadm -m discovery -t sendtargets -p 10.0.0.100:3260
+echo "InitiatorName=iqn.2014-06.com.example:remotedisk1" > /etc/iscsi/initiatorname.iscsi
+systemctl restart iscsid
+iscsiadm -m node -T iqn.2014-06.com.example:remotedisk1 -p 10.0.0.100:3260 -l
+
+
+lsblk
+fdisk /dev/sda #It will open a prompt to format the disk
+n
+enter
+enter
+enter
+w
+
+partprobe
+mkfs.xfs /dev/sda1
+mkdir /mnt/iscsi
+mount -t xfs /dev/sda1 /mnt/iscsi
+df -h
+umount /dev/sda1
+
+----- install autofs
+yum -y install autofs
+systemctl enable autofs
+systemctl start autofs
+
+##Edit automaster at vi /etc/auto.master
+
+comment #/misc 	/etc/auto.master
+/mnt 	/etc/auto.misc
+:wq
+
+------
+blkid and copy UUID
+
+vi /etc/auto.misc
+
+add at the end
+
+iscsi	-fstype=xfs		:UUID
+
+systemctl restart autofs
+
+
+

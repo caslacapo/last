@@ -1,0 +1,53 @@
+yum -y install samba
+
+mkdir /smbshare
+semanage fcontext -a -t samba_share_t '/smbshare(/.*)?/'
+restorecon -vvFR /smbshare
+setsebool -P samba_export_all_rw=1
+vi /etc/samba/smb.conf
+
+--In the file-- below cups add
+hosts allow = 10.0.0. .contoso.com
+
+#ESC :$ --> TAKE ME TO THE BOTTOM and insert
+[smbshare]
+	path = /smbshare
+	write list = uone @faculty
+	
+:wq
+testparm
+
+useradd -s /sbin/nologin uone
+groupadd faculty
+useradd -G faculty utwo
+
+#set password
+echo Pa11word | passwd --stdin uone
+echo Pa11word | passwd --stdin utwo
+
+smbpasswd -a uone
+smbpasswd -a utwo
+
+chown uone:faculty /smbshare
+chmod 770 /smbshare
+
+systemctl start smb nmb
+systemctl enable smb nmb
+
+firewall-cmd --permanent --add-service=samba
+firewall-cmd --reload
+
+VM2
+
+yum -y install samba-client cifs-utils
+cd root
+mkdir /testdir
+mount -o username=uone,password=Pa11word //vm1/smbshare /testdir
+touch ~/smb-cred.txt
+chmod 600 ~/smb-cred.txt
+vi ~/smb-cred.txt
+##in the file add
+username=uone
+password=Pa11word
+
+:wq
